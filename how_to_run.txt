@@ -1,7 +1,9 @@
 1. Open powershell or cmd in the folder
-2. Execute:
+2. Execute the next code
+  c:\>python -m venv c:\path\to\myen -- where \path\to\myen is the direcction of the folder
+3. Execute:
   .\Scripts\activate.bat --> on cmd
   .\Scripts\Activate.ps1 --> on powershell
 (if not work, put the complete direccion, example "C:\User\...\Scripts\activate.bat")
-3. run the next command for install de dependences: "pip install -r requirements.txt"
-4. Execute the program: "python Main.py"
+4. run the next command for install de dependences: "pip install -r requirements.txt"
+5. Execute the program: "python Main.py"
