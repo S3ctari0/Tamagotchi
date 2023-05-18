@@ -26,14 +26,14 @@ def animal_root(animal=None):
     """
 
     animal["name"] = nombre_mascota.get()
-    nombre = animal["especie"]
+    specie = animal["specie"]
     name = animal["name"]
 
-    if nombre == "Perro":
+    if specie == "Perro":
         mascota = Perro(animal)
-    elif nombre == "Conejo":
+    elif specie == "Conejo":
         mascota = Conejo(animal)
-    elif nombre == "Gato":
+    elif specie == "Gato":
         mascota = Gato(animal)
 
     if animal["is_load"]:
@@ -42,12 +42,12 @@ def animal_root(animal=None):
     new_root = tk.Toplevel()
     new_root.geometry("500x600")
     new_root.configure(bg="purple4")
-    new_root.title(nombre)
+    new_root.title(specie)
     label_name = tk.Label(new_root, text=f"Felicidades tienes una nueva mascota :D\n\n{name}",
                         font=("Calibri 14"), bg="purple4", fg="white")
     label_name.grid(row=0, column=0, columnspan=4, padx=90, pady=8)
 
-    nombre_imagen = animal_imagenes[nombre]
+    nombre_imagen = animal_imagenes[specie]
     imagen = Image.open(nombre_imagen)
     imagen = imagen.resize((300, 300))
     imagen_tk = ImageTk.PhotoImage(imagen)
@@ -112,31 +112,52 @@ root = tk.Tk()
 root.geometry("450x200")
 root.title("Inicio")
 root.configure(bg="cornflower blue")
-text = tk.Label(root, text="Ingrese un nombre para su mascota", font=("Calibri 14"), bg="cornflower blue")
-text.grid(row=0, column=0, columnspan=3, padx=20, pady=8)
+
+label_name = tk.Label(root, text="Ingrese un nombre para su mascota", font=("Calibri 14"), bg="cornflower blue")
+label_name.grid(row=0, column=0, columnspan=3, padx=20, pady=8)
 nombre_mascota = tk.StringVar()
-name = tk.Label(root, text="\nElija un animal para que sea su mascota", font=("Calibri 14"), bg="cornflower blue")
-name.grid(row=4, column=0, columnspan=3, padx=20, pady=15)
-name_tamagotchi = tk.Entry(root, textvariable=nombre_mascota, width=25, bg="sky blue")
-name_tamagotchi.place(x="100", y="40")
+label_specie = tk.Label(root, text="\nElija un animal para que sea su mascota", font=("Calibri 14"), bg="cornflower blue")
+label_specie.grid(row=4, column=0, columnspan=3, padx=20, pady=15)
+
+
+nombre_tamagotchi = tk.Entry(root, textvariable=nombre_mascota, width=25, bg="sky blue")
+nombre_tamagotchi.place(x="100", y="40")
 mascota = {}
+class_mascota = ''
+
+label_state = None
 
 def cargar_mascota():
     mascota = collection.find_one({"name":nombre_mascota.get()})
+    if mascota == None:
+        label_state = tk.Label(root, text="No se ha encontrado una mascota con ese nombre", font=("Calibri 14"), bg="cornflower blue")
+        label_state.grid(row=6, column=0, columnspan=3, padx=20, pady=15)
+        raise Exception("No se ha encontrado una mascota con ese nombre")
     mascota["is_load"] = True
+    animal_root(mascota)
+
+def crear_mascota(specie):
+    buscar_mascota = collection.find_one({"name":nombre_mascota.get()})
+    if buscar_mascota != None:
+        label_state = tk.Label(root, text="Ya existe una mascota con ese nombre", font=("Calibri 14"), bg="cornflower blue")
+        label_state.grid(row=6, column=0, columnspan=3, padx=20, pady=15)
+        raise Exception("Ya existe una mascota con ese nombre")
+    mascota["name"] = nombre_mascota.get()
+    mascota["specie"] = specie
+    if specie == '':
+        # Esto no debería pasar nunca
+        label_state = tk.Label(root, text="No se ha seleccionado una especie", font=("Calibri 14"), bg="cornflower blue")
+        label_state.grid(row=6, column=0, columnspan=3, padx=20, pady=15)
+        raise Exception("No se ha seleccionado una especie")
+    mascota["is_load"] = False
     animal_root(mascota)
     
 cargar = tk.Button(root,text="Cargar",command= lambda: cargar_mascota(),cursor="hand2", activebackground="light sky blue", bg="sky blue")
 cargar.place(x=380,y=45)
-crear = tk.Button(root,text="Crear",cursor="hand2", command= lambda mascota=mascota:animal_root(mascota),activebackground="light sky blue", bg="sky blue")
-crear.place(x=380,y=90)
 
-def update_mascota(nombre):
-    mascota["especie"] = nombre
-    mascota["is_load"] = False
-
-for i, nombre in enumerate(list_tamagotchi):
-    boton = tk.Button(root, text=nombre, command=lambda nombre=nombre: update_mascota(nombre), cursor="hand2", activebackground="light sky blue", bg="sky blue")
+for i, specie in enumerate(list_tamagotchi):
+    boton = tk.Button(root, text=specie, command=lambda specie=specie: crear_mascota(specie), cursor="hand2", activebackground="light sky blue", bg="sky blue")
     boton.grid(row=5, column=i, padx=10, pady=5)
 
 root.mainloop()
+

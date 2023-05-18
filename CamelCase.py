@@ -54,7 +54,7 @@ class Tamagotchi(ABC):
         """
         Guarda los datos del Tamagotchi en la base de datos.
         """
-        mascota = {"name": self.name, "hunger": self.hunger, "energy": self.energy, "age": self.age, "happiness": self.happiness, "especie": self.especie}
+        mascota = {"name": self.name, "hunger": self.hunger, "energy": self.energy, "age": self.age, "happiness": self.happiness, "specie": self.specie}
         filter = {"name": self.name}
 
         if self.is_load:
@@ -107,7 +107,7 @@ class Perro(Tamagotchi):
         """
         super().__init__(name)
         self.age = 0
-        self.especie = "Perro"
+        self.specie = "Perro"
 
     def age_up(self):
         """
@@ -138,7 +138,7 @@ class Conejo(Tamagotchi):
         """
         super().__init__(name)
         self.age = 0
-        self.especie = "Conejo"
+        self.specie = "Conejo"
 
     def age_up(self):
         """
@@ -169,7 +169,7 @@ class Gato(Tamagotchi):
         """
         super().__init__(name)
         self.age = 0
-        self.especie = "Gato"
+        self.specie = "Gato"
 
     def age_up(self):
         """
